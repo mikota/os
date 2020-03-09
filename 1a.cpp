@@ -1,19 +1,29 @@
-#include<stdio.h>
-#include<signal.h>
-#include<unistd.h>
-#include<sys/time.h>
-#include<math.h>
+#include <cstdio>
+#include <iostream>
+#include <csignal>
+#include <unistd.h>
+#include <sys/time.h>
+#include <cmath>
 
 unsigned long broj = 1000000001;
 unsigned long zadnji = 1000000001;
 int pauza = 0;
 
+void printaj_zadnjeg() {
+	std::cout << "Zadnji prosti broj jest: " << zadnji << std::endl;
+}
+
 void prekidna_rutina(int sig) {
-	printf("asdf\n");
+	printaj_zadnjeg();
+}
+
+void postavi_pauzu(){
+	pauza = 1 - pauza;
 }
 
 void periodicki_posao (int sig) {
-	printf("zadnji prosti broj = %lu",zadnji);
+	printaj_zadnjeg();
+    postavi_pauzu();
 }
 
 int prost(unsigned long n) {
@@ -41,7 +51,8 @@ int main () {
 		if (prost(broj))	
 			zadnji = broj;
 		broj++;
-		pause();
+        while(pauza)
+		    pause();
 	}
 	return 0;
 }
