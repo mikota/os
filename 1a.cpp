@@ -12,7 +12,9 @@ int pauza = 0;
 void printaj_zadnjeg() {
 	std::cout << "Zadnji prosti broj jest: " << zadnji << std::endl;
 }
-
+void printaj_bez_pauze(int sig){
+ //   printaj_zadnjeg();
+}
 void prekidna_rutina(int sig) {
 	printaj_zadnjeg();
 }
@@ -36,15 +38,23 @@ int prost(unsigned long n) {
 	return 1;	
 }
 
+void terminiraj (int sig) {
+    printaj_zadnjeg();
+    kill(getpid(),SIGTERM);
+}
+
 int main () {
 	struct itimerval t;
 	//povezivanje 
+    sigset(SIGTERM, terminiraj);
+    sigset(SIGINT, SIG_IGN);
 	sigset(SIGALRM, periodicki_posao);
 	t.it_value.tv_sec = 0;
 	t.it_value.tv_usec = 500000;
 	t.it_interval.tv_sec = 0;
 	t.it_interval.tv_usec = 500000;
-	printf("Poceo osnovni program PID=%d\n", getpid());
+    int mypid = getpid();
+	printf("Poceo osnovni program PID=%d\n", mypid);
 
 	setitimer (ITIMER_REAL,&t,NULL);
 	while(1) {
