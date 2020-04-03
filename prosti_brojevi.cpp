@@ -4,17 +4,16 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <cmath>
+#define STR_PROSTI "zadnji prosti = "
 
 unsigned long broj = 1000000001;
 unsigned long zadnji = 1000000001;
 int pauza = 0;
 
 void printaj_zadnjeg() {
-	std::cout << "Zadnji prosti broj jest: " << zadnji << std::endl;
+	std::cout << STR_PROSTI << zadnji << std::endl;
 }
-void printaj_bez_pauze(int sig){
- //   printaj_zadnjeg();
-}
+
 void prekidna_rutina(int sig) {
 	printaj_zadnjeg();
 }
@@ -45,16 +44,13 @@ void terminiraj (int sig) {
 
 int main () {
 	struct itimerval t;
-	//povezivanje 
-    sigset(SIGTERM, terminiraj);
+	//povezivanje
     sigset(SIGINT, SIG_IGN);
 	sigset(SIGALRM, periodicki_posao);
 	t.it_value.tv_sec = 0;
 	t.it_value.tv_usec = 500000;
 	t.it_interval.tv_sec = 0;
 	t.it_interval.tv_usec = 500000;
-    int mypid = getpid();
-	printf("Poceo osnovni program PID=%d\n", mypid);
 
 	setitimer (ITIMER_REAL,&t,NULL);
 	while(1) {
